@@ -1,0 +1,32 @@
+---
+  - name: Deploy webserver
+    hosts: webserver
+    become: true
+    tasks:
+      # - name: Copy html file into httpd server
+      #   copy: 
+      #     src=index.html
+      #     dest=/var/www/html
+          
+ 
+      - name: Copy html file from s3 bucket
+        command: 
+          aws s3 cp s3://strongerbucket-s3s3/index.html /var/www/html
+        
+      - name: Install httpd server
+        yum:
+          name: httpd
+          state: latest
+
+
+      - name: Start httpd server
+        service:
+          name: httpd
+          state: started    
+          enabled: yes
+
+      - name: Restart httpd server
+        service:
+          name: httpd
+          state: restarted    
+          enabled: yes
